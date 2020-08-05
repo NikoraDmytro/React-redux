@@ -1,0 +1,257 @@
+*{
+    box-sizing: border-box;
+    margin: 0;
+}
+
+html{
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+main.clearfix::after{
+    clear: both;
+    content: "";
+    display: table;
+}
+
+
+.clearfix div[class*="column"]{
+    float: right; 
+    height: 100vh;   
+}
+
+.clearfix .column-left{
+    width: 47.8%;
+}
+
+.clearfix .column-right {
+    width: 52.2%;
+    background: linear-gradient(1.26deg, rgba(33, 60, 127, 0.88) 1.1%, #213B7E 98.95%);
+}
+
+
+.clearfix .logo-corner{
+    width: fit-content;
+    color: rgba(33, 60, 127, 0.88);
+    font-weight: bold;
+    display: block;
+    margin: 5% 0 14.8% 10.4%;
+}
+
+.clearfix h2{
+    font-weight: bold;
+    color: #2F3648;
+    width: fit-content;
+    margin-bottom: 10.2%;
+}
+
+.clearfix h4{
+    font-weight: normal;
+    margin-bottom: 11.7%;
+}
+
+.clearfix .sign_in{
+    margin-left: 14.14%;
+    margin-right: 22.8%;
+}
+
+.clearfix label{
+    width: fit-content;
+}
+
+.clearfix input[type="checkbox"]{
+    width: fit-content;
+    width: 1.05em;
+    height: 1.05em;
+    margin-bottom: 10.2%;
+    font-weight: 300;
+}
+
+.clearfix span{
+   margin-left: 0.6875em;
+   font-weight: 300;
+   font-size: 14px;
+}
+
+.clearfix .UserData input{
+    margin-bottom: 1.2em;
+    margin-top: 0.75em;
+    width: 100%;
+    background: #FFFFFF;
+    border: 1px solid #BFD2E2;
+    border-radius: 10px;
+    height: 2.375em;
+    padding: 5%;
+    color: rgba(47, 54, 72, 0.6);
+    font-weight: 300;
+}
+
+.clearfix #EnterTheCabinet{
+    display: block;
+    width: 100%;
+    text-align: center;
+    padding: 1.52% 31% 2.54% 31%;
+    text-decoration: none;
+    color: #FFFFFF;
+    font-size: 0.8125em;
+    background: #70BEFF;
+    box-shadow: 2px 2px 4px rgba(26, 63, 156, 0.2);
+    font-weight: 600;
+    border-radius: 10px;
+}
+
+
+.clearfix .LinksForHelp{
+    margin-top: 5.34%;
+    width: 100%;
+    text-align: center;
+}
+
+.clearfix .LinksForHelp a{
+    color: #1A3F9C;
+    font-weight: 600;
+    font-size: 1em;
+}
+
+.clearfix h5{
+    display: inline;
+    margin-right: 0.8125em;
+    font-weight: 300;
+}
+
+.clearfix #ToMainPage{
+    font-size: 0.75em;
+    position: relative;
+    top: 2em;
+    left: 84.4%;
+    color: #FFFFFF;
+    text-decoration: none;
+    padding-bottom: 0.3em;
+    font-weight: normal;
+    border-bottom: 1px solid #FFFFFF;
+}
+
+
+.clearfix .facilities{
+    width: 100%;
+    height: 84.7%;
+    padding: 26.1% 18% 0 18%;
+}
+
+.clearfix .PresentationImages{
+    width: 100%;
+    height: 54%;
+    position: relative;
+}
+
+.clearfix .PresentationImages img{
+    height: 100%;
+    width: 100%;
+    position: absolute;
+}
+
+
+.clearfix .PresentationText{
+    margin-top: 11%;
+    position: relative;
+    width: 100%;
+    height: 21.3%;
+    padding:0 9.8% 0 9.8%;
+    margin-bottom: 21.25%;
+}
+
+
+.clearfix div[id*="text"]{
+    position: absolute;
+}
+
+.clearfix div[id*="text"] h3{
+    font-size: 1.25em;
+    line-height: 1.6875em;
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 6.4%;
+    color: #FFFFFF;
+}
+
+
+.clearfix div[id*="text"] h5{
+   color: #FFFFFF;
+   font-size: 0.9em;
+   line-height: 19px;
+   font-weight: 300;
+   text-align: center;
+   margin: 0;
+   display: block;
+}
+
+
+.clearfix .switcher{
+    padding: 0 38% 0 43.3%;
+}
+
+.clearfix button[id*="switch"]{
+    padding: 0;
+    border: 0;
+    display: inline-block;
+    width: 11.25%;
+    height: 0.5625em;
+    background: rgba(255, 255, 255, 0.5);
+    margin-right: 24.5%;
+    border-radius: 100%;
+}
+
+.clearfix button[class="on"]{
+    background-color: #FFFFFF;
+}
+
+.clearfix button[id*="switch"]:last-child{
+    margin-right: 0;
+}
+
+
+.clearfix [id*="circle"]{
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 100%;
+    border: none;
+    padding: none;
+    position: absolute;
+}
+
+.clearfix #small-circle{
+    width: 56.3%;
+    height: 95%;
+    left: 57.7%;
+    top: -12.1%;
+}
+
+.clearfix #big-circle{
+    width: 76.2%;
+    height: 128.3%;
+    left: 36%;
+    top: -6.5%;
+}
+
+
+@media screen and (max-width: 820px){
+.clearfix div[class*="column"]{
+    float: none; 
+    height: 70vh;   
+}
+.clearfix div.facilities{
+    width: 100%;
+    height: 100%;
+    padding: 7.7% 18% 0 18%;
+}
+
+.clearfix .PresentationText{
+    margin-bottom: 5.6%;
+}
+
+.clearfix .column{
+    width: 100%;
+}
+
+.clearfix .column-right {
+    width: 100%;
+}
+}
