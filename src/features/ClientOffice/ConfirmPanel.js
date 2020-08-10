@@ -1,19 +1,25 @@
 import React from "react"
 import CloseButton from "../img/Close.png"
+import { Restart } from "./ProductsSlice.js"
 
 const ClosePanel = () => {
     const ConfirmPanel = document.getElementsByClassName("ConfirmPanel")[0];
-    console.log(ConfirmPanel)
     if (ConfirmPanel)
         ConfirmPanel.style.visibility = "hidden";
 }
 
-const ShowToBuyList = (ToBuyList) => {
-    console.log(ToBuyList)
+const RestartAndClose = (dispatch) => {
+    ClosePanel();
+    dispatch(Restart());
+}
+
+const ShowToBuyList = (ToBuyList, ProductsList) => {
     const ProductsNumber = ToBuyList.ProductsNumber;
     const ProductsPrice = ToBuyList.ProductsPrice;
+    const Products = [];
+    ToBuyList.Ids.map(Id => Products.push(ProductsList[Id]));
 
-    const tableTemplate = Object.values(ToBuyList.Products).map((product) => {
+    const tableTemplate = Products.map((product) => {
         return (
             <tr key={product.vendoraCode}>
                 <td>{product.name}</td>
@@ -38,22 +44,21 @@ const ShowToBuyList = (ToBuyList) => {
                 <tr className="Conclusion">
                     <td>Всего</td>
                     <td>{ProductsNumber}</td>
-                    <td>{ProductsPrice}</td>
+                    <td>{ProductsPrice.toFixed(2)}</td>
                 </tr>
             </tbody>
         </table>
     )
 }
 
-export const ConfirmPanel = (ToBuyList) => {
-    console.log(ToBuyList);
+export const ConfirmPanel = (ToBuyList, ProductsList, dispatch) => {
     return (
         <div className="ConfirmPanel" style={{ visibility: "hidden" }}>
             <div className="ConfirmBox">
                 <img src={CloseButton} className="Close" alt="Close" onClick={() => ClosePanel()} />
                 <h5 className="Legend">Вы уверены, что хотите отправить ваш заказ?</h5>
-                {ShowToBuyList(ToBuyList)}
-                <button className="ConfirmButton" onClick={() => ClosePanel()}><h5>Отменить</h5></button>
+                {ShowToBuyList(ToBuyList, ProductsList)}
+                <button className="ConfirmButton" onClick={() => RestartAndClose(dispatch)}><h5>Отменить</h5></button>
                 <button className="ConfirmButton" onClick={() => ClosePanel()}><h5>Заказать</h5></button>
             </div>
         </div>
