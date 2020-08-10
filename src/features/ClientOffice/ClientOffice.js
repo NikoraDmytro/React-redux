@@ -114,11 +114,13 @@ const DisplayProductsList = () => {
 
 
 export const ClientOffice = () => {
-    const ToBuyList = useSelector(state => state.products.ProductsToBuyList)
+    const ToBuyList = useSelector(state => state.products.ProductsToBuyList);
+    const ProductsList = useSelector(state => state.products.ProductsList);
+    const dispatch = useDispatch();
 
     return (
         <main className="ClientOffice">
-            {ConfirmPanel(ToBuyList)}
+            {ConfirmPanel(ToBuyList, ProductsList, dispatch)}
             <div className="SideMenu">
                 <img src={SideMenu} alt="SideMenu" id="ExtraButton" onClick={() => ShowSideMenu()} /><br />
                 <h1>S2</h1>
