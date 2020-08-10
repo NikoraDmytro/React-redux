@@ -3,22 +3,15 @@ import { createSlice } from "@reduxjs/toolkit"
 import { ProductsList } from "./ProductsList.js"
 
 
-const ChangeState = (Id, state, UpdateProductsList, UpdateProductsToBuyList) => {
+const ChangeState = (Id, state, UpdatedProductsToBuyList, UpdatedProductsList) => {
     const NewState = (Object.assign({}, state, {
         ProductsList: Object.assign({}, state.ProductsList, {
             [Id]: Object.assign({}, state.ProductsList[Id],
-                UpdateProductsList
+                UpdatedProductsList
             )
         }),
-        ProductsToBuyList: Object.assign({}, state.ProductsToBuyList, UpdateProductsToBuyList, {
-            Products: Object.assign({}, state.ProductsToBuyList.Products, {
-                [Id]: Object.assign({}, state.ProductsList[Id],
-                    UpdateProductsList
-                )
-            })
-        })
-    }))
-
+        ProductsToBuyList: Object.assign({}, UpdatedProductsToBuyList)
+    }));
     return NewState;
 }
 
@@ -29,7 +22,6 @@ const Products = createSlice({
         ProductsList: ProductsList,
         ProductsToBuyList: {
             Ids: [],
-            Products: {},
             ProductsNumber: 0,
             ProductsPrice: 0,
         },
@@ -38,112 +30,105 @@ const Products = createSlice({
         AddOrRemoveProduct: (state, action) => {
             const Id = action.payload;
             const Product = state.ProductsList[Id];
+            const ProductsToBuyList = state.ProductsToBuyList;
             const Input = document.getElementById(`${Product.vendorCode}number`);
-            if (!Product.order && Product.remainder) {
+
+            const Ids = new Set(state.ProductsToBuyList.Ids);
+
+            if (!+Product.order && +Product.remainder) {
                 Input.value = 1;
-
-                const UpdatedToBuyList = {
-                    ProductsNumber: state.ProductsToBuyList.ProductsNumber + (Input.value - Product.order),
-                    ProductsPrice: state.ProductsToBuyList.ProductsPrice + (Input.value - Product.order) * Product.priceWithVAT,
-                }
-                if (Id in state.ProductsToBuyList.Ids !== true) {
-                    UpdatedToBuyList.Ids = [...state.ProductsToBuyList.Ids, Id];
-                    UpdatedToBuyList.Products = Object.assign({}, state.ProductsToBuyList.Products, {
-                        [Product.vendorCode]: Product
-                    });
-                }
-
-
-                const NewState = ChangeState(Id, state, {
-                    remainder: Product.remainder - 1,
-                    order: 1,
-                    orderPrice: Product.priceWithVAT,
-                }, UpdatedToBuyList)
-
-                return (NewState);
+                Ids.add(Id);
             } else {
-                Input.value = 0;
-
-                const UpdatedToBuyList = {
-                    ProductsNumber: state.ProductsToBuyList.ProductsNumber + (Input.value - Product.order),
-                    ProductsPrice: state.ProductsToBuyList.ProductsPrice + (Input.value - Product.order) * Product.priceWithVAT,
-                }
-                if (Id in state.ProductsToBuyList.Ids !== true) {
-                    UpdatedToBuyList.Ids = state.ProductsToBuyList.Ids.reduce((ToBuyList, id) => {
-                        if (id !== Id)
-                            ToBuyList.push(id)
-                        return ToBuyList
-                    }, []);
-                    UpdatedToBuyList.Products = delete state.ProductsToBuyList.Id;
-                }
-
-                const NewState = ChangeState(Id, state, {
-                    remainder: Number(Product.order) + Number(Product.remainder),
-                    order: 0,
-                    orderPrice: 0,
-                }, UpdatedToBuyList)
-                return (NewState);
+                Input.value = "";
+                Ids.delete(Id);
             }
+
+            const UpdatedToBuyList = {
+                Ids: [...Ids],
+                ProductsNumber: ProductsToBuyList.ProductsNumber + (Input.value - Product.order),
+                ProductsPrice: ProductsToBuyList.ProductsPrice + (Input.value - Product.order) * Product.priceWithVAT,
+            }
+
+            const NewState = ChangeState(Id, state, UpdatedToBuyList, {
+                remainder: Number(Product.order) + Number(Product.remainder) - Input.value,
+                order: Input.value,
+                orderPrice: Input.value * Product.priceWithVAT,
+            })
+
+            return NewState;
         },
         AddProductByAmount: (state, action) => {
             const Id = action.payload;
             const Product = state.ProductsList[Id];
+            const ProductsToBuyList = state.ProductsToBuyList;
             const Input = document.getElementById(`${Product.vendorCode}number`);
             const Checkbox = document.getElementById(`${Product.vendorCode}checkbox`);
-            if (Input.value === "0") {
-                Checkbox.checked = false
+            let Value = Input.value;
 
-                const UpdatedToBuyList = {
-                    ProductsNumber: state.ProductsToBuyList.ProductsNumber + (Input.value - Product.order),
-                    ProductsPrice: state.ProductsToBuyList.ProductsPrice + (Input.value - Product.order) * Product.priceWithVAT,
-                }
-                if (Id in state.ProductsToBuyList.Ids !== true) {
-                    UpdatedToBuyList.Ids = state.ProductsToBuyList.Ids.reduce((ToBuyList, id) => {
-                        if (id !== Id)
-                            ToBuyList.push(id)
-                        return ToBuyList
-                    }, []);
-                    UpdatedToBuyList.Products = delete state.ProductsToBuyList.Id;
-                }
+            if (Value > Number(Product.order) + Number(Product.remainder) || Value < 0) {
+                Value = Product.order;
+                Input.value = Product.order;
+                return;
+            }
 
-                const NewState = ChangeState(Id, state, {
-                    remainder: Number(Product.order) + Number(Product.remainder),
-                    order: 0,
-                    orderPrice: 0,
-                }, UpdatedToBuyList);
-                return NewState
+            const Ids = new Set(state.ProductsToBuyList.Ids);
+
+            if (!Number(Value)) {
+                Value = 0
+                Input.value = "";
+                Checkbox.checked = false;
+
+                Ids.delete(Id);
             } else {
-                if (Input.value > Number(Product.order) + Number(Product.remainder) || Input.value < 0) {
-                    Input.value = Product.order;
-                    return;
-                }
                 Checkbox.checked = true;
 
-                const UpdatedToBuyList = {
-                    ProductsNumber: state.ProductsToBuyList.ProductsNumber + (Input.value - Product.order),
-                    ProductsPrice: state.ProductsToBuyList.ProductsPrice + (Input.value - Product.order) * Product.priceWithVAT,
-                }
-                if (Id in state.ProductsToBuyList.Ids !== true) {
-                    UpdatedToBuyList.Ids = [...state.ProductsToBuyList.Ids, Id];
-                    UpdatedToBuyList.Products = Object.assign({}, state.ProductsToBuyList.Products, {
-                        [Product.vendorCode]: Product
-                    });
-                }
-
-                console.log(UpdatedToBuyList)
-
-                const NewState = ChangeState(Id, state, {
-                    remainder: Product.remainder - (Input.value - Product.order),
-                    order: Input.value,
-                    orderPrice: (Product.priceWithVAT * Input.value).toFixed(2),
-                }, UpdatedToBuyList)
-                return NewState
+                Ids.add(Id);
             }
-        }
+
+            const UpdatedToBuyList = {
+                Ids: [...Ids],
+                ProductsNumber: ProductsToBuyList.ProductsNumber + (Value - Product.order),
+                ProductsPrice: ProductsToBuyList.ProductsPrice + (Value - Product.order) * Product.priceWithVAT,
+            }
+
+
+            const NewState = ChangeState(Id, state, UpdatedToBuyList, {
+                remainder: Product.remainder - (Value - Product.order),
+                order: Value,
+                orderPrice: (Product.priceWithVAT * Value).toFixed(2),
+            })
+
+            return NewState
+        },
+        Restart: state => {
+            const Products = state.ProductsList;
+            const ProductsToBuyList = state.ProductsToBuyList;
+            const UpdatedToBuyList = {
+                Ids: [],
+                ProductsNumber: 0,
+                ProductsPrice: 0,
+            }
+
+            const NewState = ProductsToBuyList.Ids.map((Id) => {
+                const Product = Products[Id];
+                const Input = document.getElementById(`${Product.vendorCode}number`);
+                const Checkbox = document.getElementById(`${Product.vendorCode}checkbox`);
+
+                Input.value = "";
+                Checkbox.checked = false;
+
+                return (ChangeState(Id, state, UpdatedToBuyList, {
+                    remainder: Number(Product.remainder) + Number(Product.order),
+                    order: 0,
+                    orderPrice: 0,
+                }))
+            })
+            return NewState[0];
+        },
     }
 });
 
 
-export const { AddOrRemoveProduct, AddProductByAmount } = Products.actions;
+export const { AddOrRemoveProduct, AddProductByAmount, Restart } = Products.actions;
 
 export default Products.reducer;
